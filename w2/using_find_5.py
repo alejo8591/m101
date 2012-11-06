@@ -9,8 +9,8 @@ stories = db.stories
 
 def find():
     print "Find, reporting for duty"
-    query = {'title':{'$regex':'Microsoft'}}
-    projection = {'title':1, '_id':0}
+    query = {'media.oembed.type':'video'}
+    projection = {'media.oembed.url':1, '_id':0}
     try:
         iter = stories.find(query, projection)
     except:
