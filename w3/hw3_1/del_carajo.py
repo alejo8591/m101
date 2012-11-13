@@ -8,7 +8,7 @@ print students.count()
 try:
     i = 0
     for i in range(students.count()):
-        count, homework,array=0,0,[]
+        homework,array=0,[]
         homeworks =  students.find({'_id': i})
         for homework in range(len(homeworks[0]['scores'])):
             array.append(homeworks[0]['scores'][homework])
