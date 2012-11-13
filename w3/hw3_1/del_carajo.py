@@ -5,27 +5,26 @@ connect = pymongo.Connection("mongodb://127.0.0.1", safe=True)
 db = connect.school
 students = db.students
 print students.count()
-try:
-    i = 0
-    for i in range(students.count()+1):
-        homeworks =  students.find({'student_id': i,'type':'homework'}).limit(2)
-        if homeworks[0]['score'] > homeworks[1]['score']:
-            grades.remove({'type':'homework','score':homeworks[1]['score'], 'student_id': i})
-        else:
-            grades.remove({'type':'homework','score':homeworks[0]['score'], 'student_id': i})
-        i+=1
-except:
-    print "Unexpected error:",sys.exc_info()[0]
-    
-print grades.count()
+i = 0
+for i in range(students.count()+1):
+    homework,position,value=0,0,0
+    homeworks =  students.find({'_id': i}, {"scores":{"$slice":[2,4]}})
+    for homework in range(len(homeworks[0]['scores'])):
+        if value == 0 and value < homeworks[0]['scores'][i]['score']:
+            value = homeworks[0]['scores'][i]['score']
+            position = homework
+        if value > homeworks[0]['scores'][i]['score']:
+            value = homeworks[0]['scores'][i]['score']
+            position = homework
+    students.update({"_id":i}, {"$pop":{"scores":position}})
+        
+print students.count()
 """
-h, i = 0, 0
+h,i= 0,0
 for i in range(len(homeworks[0]['scores'])):
      if homeworks[0]['scores'][i]['type'] == 'homework':
-             if h < homeworks[0]['scores'][i]['score']:
-                     h = h
-             else:
-                     h = homeworks[0]['scores'][i]['score']
-             print h
+         if h == 0 and h < homeworks[0]['scores'][i]['score']: h = homeworks[0]['scores'][i]['score']
+         while h > homeworks[0]['scores'][i]['score']:
+             h = homeworks[0]['scores'][i]['score']
 """
 #delete element db.students.update({"_id":0}, {"$pop": {"scores":number element}})
