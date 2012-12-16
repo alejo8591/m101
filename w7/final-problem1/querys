@@ -1,0 +1,4 @@
+db.messages.aggregate([{$match:{"headers.From":"evelyn.metoyer@enron.com"}},{$unwind:"$headers.To"},{$match:{"headers.To":"kate.symes@enron.com"}},{$group:{_id:"$headers.To","messages":{$sum:1}}}])
+
+
+
